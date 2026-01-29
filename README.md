@@ -1,8 +1,8 @@
 1. Clone this repo on your local machine. Then, login to CHTC and clone this repo there as well: 
 ```aiignore
-git clone git@github.com:NicholasCorrado/llm-starter.git
+git clone git@github.com:Badger-RL/llm-starter.git
 ./login_chtc.sh
-git clone git@github.com:NicholasCorrado/llm-starter.git
+git clone git@github.com:Badger-RL/llm-starter.git
 ```
 We do all code development on your local machine. 
 We submit jobs from CHTC. 
