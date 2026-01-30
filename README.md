@@ -12,6 +12,23 @@ We do all code development on your local machine.
 We submit jobs from CHTC. 
 When submitting jobs, we'll only use scripts the `chtc` directory. We won't run any python code the CHTC submit node.
 
+1. On both your local machine and CHTC submit node, update the `USER` `HOSTNAME` variables in
+`job.sh`, `login_chtc.sh`, and `transfer_to_chtc.sh` to match your CHTC username and hostname.
+
+1. (Optional) Note that `login_chtc.sh` can be used in any project you build, 
+so it's useful to do whatever you need to do so you can execute the script from any directory on your machine.
+On a Mac, you would do this:
+```aiignore
+mkdir -p ~/bin
+mv login_chtc.sh ~/bin/
+chmod +x ~/bin/login_chtc.sh
+```
+and then add this to your `~/.zshrc` (or `~/.bashrc`):
+```aiignore
+export PATH="$HOME/bin:$PATH"
+```
+Restart your terminal or run `source ~/.zshrc`. You should now be able to run `login_chtc.sh` from anywhere.
+
 1. On your local machine, add your wandb and huggingface login info to `chtc/job.sh`
 ```aiignore
 wandb login <your wandb key>

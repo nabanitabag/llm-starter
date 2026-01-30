@@ -6,14 +6,12 @@ step=$2 # ranges from 0 to num_jobs-1
 #echo $cmd
 
 export HOME=$_CONDOR_SCRATCH_DIR
-export STAGE=/staging/ncorrado
 export TRANSFORMERS_CACHE=$_CONDOR_SCRATCH_DIR/models
 export HF_DATASETS_CACHE=$_CONDOR_SCRATCH_DIR/datasets
 export HF_MODULES_CACHE=$_CONDOR_SCRATCH_DIR/modules
 export HF_METRICS_CACHE=$_CONDOR_SCRATCH_DIR/metrics
 export HF_HOME=$_CONDOR_SCRATCH_DIR/hf_home
 
-export USER=condor_user # uuid issues when using vllm with chtc
 export CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 # on CHTC machines, gpu names are *not* the usual 0-7 by default, so we rename them here
 export TORCHINDUCTOR_CACHE_DIR=$_CONDOR_SCRATCH_DIR/torch_cache
 export TORCH_COMPILE_CACHE=$_CONDOR_SCRATCH_DIR/torch_compile_cache
@@ -29,7 +27,8 @@ export RAY_TMPDIR=/tmp/ray_$USER
 
 # fetch code from /staging/
 CODENAME=llm-starter
-cp /staging/ncorrado/${CODENAME}.tar.gz .
+USER=ncorrado
+cp /staging/${USER}/${CODENAME}.tar.gz .
 tar -xzf ${CODENAME}.tar.gz
 rm ${CODENAME}.tar.gz
 cd ${CODENAME}
