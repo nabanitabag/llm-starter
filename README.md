@@ -10,7 +10,7 @@ git clone git@github.com:Badger-RL/llm-starter.git
 ```
 We do all code development on your local machine. 
 We submit jobs from CHTC. 
-When submitting jobs, we'll only use scripts the `chtc` directory. We won't run any python code the CHTC submit node.
+When submitting jobs, we'll only use scripts in the `chtc` directory. We won't run any python code in the CHTC submit node.
 
 2. On both your local machine and CHTC submit node, update the `USER` `HOSTNAME` variables in
 `job.sh`, `login_chtc.sh`, and `transfer_to_chtc.sh` to match your CHTC username and hostname.
