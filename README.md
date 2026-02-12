@@ -10,7 +10,7 @@ git clone git@github.com:Badger-RL/llm-starter.git
 ```
 We do all code development on your local machine. 
 We submit jobs from CHTC. 
-When submitting jobs, we'll only use scripts the `chtc` directory. We won't run any python code the CHTC submit node.
+When submitting jobs, we'll only use scripts in the `chtc` directory. We won't run any python code on the CHTC submit node.
 
 2. On both your local machine and CHTC submit node, update the `USER` `HOSTNAME` variables in
 `job.sh`, `login_chtc.sh`, and `transfer_to_chtc.sh` to match your CHTC username and hostname.
@@ -32,7 +32,7 @@ Restart your terminal or run `source ~/.zshrc`. You should now be able to run `l
 4. On your local machine, add your wandb and huggingface login info to `chtc/job.sh`
 ```aiignore
 wandb login <your wandb key>
-huggingface-cli login --token <your hf token>
+hf auth --token <your hf token>
 ```
 The code will run even if you comment out these lines (they're currently commented out), 
 but you'll need to set it up eventually, since we'll be using wandb and huggingface for logging and model storage.
