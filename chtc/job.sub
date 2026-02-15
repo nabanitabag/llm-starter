@@ -34,6 +34,6 @@ requirements            = (Target.HasCHTCStaging == true) && (Target.CUDADriverV
 +WantGlidein            = false
 +GPUJobLength           = "short"
 
-#queue 1
-queue 1 params from $(commands_file)
+queue 1
+#queue 1 params from $(commands_file)
 #queue $(num_jobs) mem, disk, params from $(commands_file)
