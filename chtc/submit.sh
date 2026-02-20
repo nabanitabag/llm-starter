@@ -13,7 +13,8 @@ condor_submit job.sub \
   results_dir=${results_dir} \
   log_dir=${log_dir} \
   commands_file=${commands_file_tmp} \
-  num_jobs=${2:-1}
+  num_jobs=${2:-1} \
+  chtc_user=${CHTC_USER}
 
 # remove temp commands file
 rm $commands_file_tmp

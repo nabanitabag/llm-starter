@@ -4,7 +4,7 @@ if [ -f .env ]; then
     set +a
 fi
 
-f=llm-starter
+f=llm-starter-2
 
 cd ../.. # cd just outside the repo
 tar --exclude='.git' \

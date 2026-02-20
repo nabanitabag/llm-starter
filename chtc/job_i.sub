@@ -14,9 +14,8 @@ error       = ../../$(log_dir)/$(Process).err
 stream_output           = true
 should_transfer_files   = YES
 when_to_transfer_output = ON_EXIT
+transfer_input_files    = .env, job.sh
 transfer_output_files   = results_$(Process).tar.gz
-
-requirements = (Target.HasCHTCStaging == true)
 
 # Compute resources
 request_cpus            = 8
@@ -26,7 +25,7 @@ request_disk            = 200GB
 
 # Extra GPU settings
 request_gpus            = $(n_gpu)
-Requirements            = (Target.CUDADriverVersion >= 12.1)
+Requirements            = (Target.CUDADriverVersion >= 12.1) && (Target.HasCHTCStaging == true)
 #&& (Target.GPUs_GlobalMemoryMb > 30000)
 
 # change to true if *not* using staging for checkpoints and interested in accessing GPUs beyond CHTC

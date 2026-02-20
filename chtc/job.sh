@@ -23,18 +23,16 @@ export VLLM_USAGE_DISABLE=1
 export VLLM_ATTENTION_BACKEND=FLASH_ATTN
 export NCCL_P2P_DISABLE=1
 export OUTLINES_CACHE_DIR='/tmp/.outlines'
-export RAY_TMPDIR=/tmp/ray_$USER
-export USER=ncorrado
-
 if [ -f .env ]; then
     set -a  # Automatically export all variables defined in the file
     source .env
     set +a
 fi
+export USER=${CHTC_USER}
+export RAY_TMPDIR=/tmp/ray_$USER
 
 # fetch code from /staging/
 CODENAME=llm-starter
-export USER=${CHTC_USER}
 cp /staging/${USER}/${CODENAME}.tar.gz .
 tar -xzf ${CODENAME}.tar.gz
 rm ${CODENAME}.tar.gz
@@ -43,12 +41,10 @@ cd ${CODENAME}
 wandb login ${WANDB_API_KEY}
 hf auth login --token ${HF_TOKEN}
 
-export PYTHONPATH=.:$PYTHONPATH
+# Ensure python looks in the current folder to find the file we just made
+export PYTHONPATH=$(pwd):$PYTHONPATH
 git clone https://github.com/verl-project/verl.git -b v0.7.0
 pip install -e verl
-
-# Monkeypatch main_ppo.py to fix the "I have no name!" crash automatically
-sed -i '1i import getpass\ngetpass.getuser = lambda: "chtc_user"' verl/verl/trainer/main_ppo.py
 
 # You can pass a string containing a general python command to execute here
 #$cmd
@@ -77,8 +73,6 @@ PYTHONUNBUFFERED=1 python3 -m verl.trainer.main_ppo \
   critic.ppo_micro_batch_size_per_gpu=4 \
   algorithm.kl_ctrl.kl_coef=0.001 \
   trainer.logger=['console','wandb'] \
-  trainer.project_name=llm-starter \
-  trainer.experiment_name=gsm8k-test-run \
   trainer.val_before_train=False \
   trainer.n_gpus_per_node=1 \
   trainer.nnodes=1 \
