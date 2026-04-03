@@ -1,0 +1,39 @@
+# Python build file
+
+universe = container
+container_image = docker://verlai/verl:vllm012.latest
+
+executable  = job_balrog.sh
+initial_dir = $(results_dir)
+arguments   = $(Process) $(Step) $(params)
+
+log         = ../../$(log_dir)/$(Process).log
+output      = ../../$(log_dir)/$(Process).out
+error       = ../../$(log_dir)/$(Process).err
+
+stream_output           = true
+should_transfer_files   = YES
+when_to_transfer_output = ON_EXIT
+transfer_input_files    = .env, job_balrog.sh
+#transfer_output_files  = results_$(Process).tar.gz
+
+# Compute resources
+request_cpus            = 8
+request_memory          = 200GB
+request_disk            = 200GB
+#chtc_want_el8           = true
+
+# Extra GPU settings
+request_gpus            = 1
+requirements            = (Target.HasCHTCStaging == true) && (Target.CUDADriverVersion >= 12.1)
+# && (Target.GPUs_GlobalMemoryMb > 30000)
+
+# change to true if *not* using staging for checkpoints and interested in accessing GPUs beyond CHTC
++WantGPULab = true
++WantFlocking           = false
++WantGlidein            = false
++GPUJobLength           = "short"
+
+queue 1
+#queue 1 params from $(commands_file)
+#queue $(num_jobs) mem, disk, params from $(commands_file)
