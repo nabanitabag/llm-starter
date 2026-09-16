@@ -4,7 +4,7 @@ if [ -f .env ]; then
     source .env
     set +a
 else
-    echo "Error: .env file missing"
+    echo "Error: .env file missing from chtc/ directory. Please copy .env.template to .env and fill in the values."
     exit 1
 fi
 

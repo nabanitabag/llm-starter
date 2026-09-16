@@ -1,0 +1,22 @@
+# Interactive twin of job_realtimegym.sub -- same image and resources, no
+# executable, so you get a shell on the GPU node to run job_realtimegym.sh by hand.
+universe = container
+container_image = docker://verlai/verl:vllm012.latest
+
+should_transfer_files   = YES
+when_to_transfer_output = ON_EXIT
+transfer_input_files    = .env, job_realtimegym.sh
+
+request_cpus            = 8
+request_memory          = 64GB
+request_disk            = 80GB
+
+request_gpus            = $(n_gpu)
+requirements            = (Target.HasCHTCStaging == true) && (Target.CUDADriverVersion >= 12.1) && (Target.GPUs_GlobalMemoryMb > 40000)
+
++WantGPULab             = true
++WantFlocking           = false
++WantGlidein            = false
++GPUJobLength           = "short"
+
+queue 1
