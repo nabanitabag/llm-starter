@@ -18,16 +18,31 @@ should_transfer_files   = YES
 when_to_transfer_output = ON_EXIT
 transfer_input_files    = .env, job_realtimegym.sh
 
-environment = "MODEL=$(model) GAME=$(game) LOAD=$(load) PRESSURE=$(pressure) IBUDGET=$(ibudget) SEEDS=$(seeds) REPEATS=$(repeats) MAXSTEPS=$(maxsteps) RUNTAG=$(runtag)"
+environment = "MODEL=$(model) GAME=$(game) LOAD=$(load) PRESSURE=$(pressure) IBUDGET=$(ibudget) SEEDS=$(seeds) REPEATS=$(repeats) MAXSTEPS=$(maxsteps) RUNTAG=$(runtag) MAXLEN=$(maxlen) MODE=$(mode) PLANNING_MODEL=$(planning_model) REACTIVE_MODEL=$(reactive_model) REASONING_PARSER=$(reasoning_parser) MODEL_TAG=$(model_tag)"
 
-# 8 eval processes + one 8B model. The verl template's 200GB/200GB is a
-# training-sized ask that slows matching; this matches faster.
+# Measured on a real run: ~5 GB RAM, ~16 GB disk (one 8B model + 8 seeds).
+# Llama agile holds two 8B models, so ~32 GB of weights on disk. Asking for much
+# more than this shrinks the pool: a free GPU on a machine whose RAM is mostly
+# taken by other jobs cannot fit a 64 GB request, and goes to someone else.
 request_cpus            = 8
-request_memory          = 64GB
-request_disk            = 80GB
+request_memory          = 24GB
+request_disk            = 60GB
 
 request_gpus            = 1
-requirements            = (Target.HasCHTCStaging == true) && (Target.CUDADriverVersion >= 12.1) && (Target.GPUs_GlobalMemoryMb > 40000)
+# Black-hole protection. A broken or busy GPU makes jobs crash within minutes,
+# which frees the slot for the next idle job, which crashes too. So:
+#  - remember the last few machines this job ran on,
+#  - hold it if it exits non-zero, release it after 2 min (max 3 starts),
+#  - and require it to avoid every machine it already ran on.
+# AVOID_HOSTS (a quoted, comma-separated list) blocks known-bad machines up front.
+job_machine_attrs                = Machine
+job_machine_attrs_history_length = 3
+on_exit_hold     = (ExitCode =!= UNDEFINED) && (ExitCode != 0)
+periodic_release = (NumJobStarts < 3) && ((time() - EnteredCurrentStatus) > 120)
+
+requirements            = (Target.HasCHTCStaging == true) && (Target.CUDADriverVersion >= 12.1) && (Target.GPUs_GlobalMemoryMb > $(gpumem)) \
+                          && (Target.Machine =!= MY.MachineAttrMachine0) && (Target.Machine =!= MY.MachineAttrMachine1) && (Target.Machine =!= MY.MachineAttrMachine2) \
+                          && !stringListMember(Target.Machine, "$(avoid_hosts)")
 
 +WantGPULab             = true
 +WantFlocking           = false

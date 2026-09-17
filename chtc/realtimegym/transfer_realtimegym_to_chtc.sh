@@ -27,6 +27,13 @@ ssh -o ControlMaster=auto -o ControlPath=~/.ssh/control-%r@%h:%p -o ControlPersi
 echo "Transferring to /staging/n/${USER}/ ..."
 scp -o ControlPath=~/.ssh/control-%r@%h:%p ${f}.tar.gz ${USER}@${HOSTNAME}:/staging/n/${USER}/
 
+# Also drop the job script into /staging so a RUNNING interactive job can
+# pull the latest copy without re-queuing.
+echo "Copying job_realtimegym.sh to staging..."
+scp -o ControlPath=~/.ssh/control-%r@%h:%p \
+    llm-starter/chtc/realtimegym/job_realtimegym.sh \
+    ${USER}@${HOSTNAME}:/staging/n/${USER}/
+
 echo "Syncing chtc scripts to home..."
 rsync -avz -e "ssh -o ControlPath=~/.ssh/control-%r@%h:%p" llm-starter/chtc ${USER}@${HOSTNAME}:~/llm-starter/
 
